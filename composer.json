@@ -1,0 +1,24 @@
+{
+    "name": "trishulapi/core",
+    "description": "A Core Concept Behind TrishulApi framework.",
+    "type": "library",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Shyam Dubey",
+            "email":"shyam0853@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "TrishulApi\\Core\\": "src/"
+        }
+    },
+    "minimum-stability": "stable",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/trishulapi/core.git"
+        }
+    ]
+}
