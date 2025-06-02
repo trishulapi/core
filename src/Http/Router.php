@@ -397,6 +397,7 @@ class Router
         $security = [],
         $consumes = "application/json",
         $produces = "application/json",
+        $requestBody = null,
         $exclude_from_swagger = false
     ) {
         $route["url"] = $url;
@@ -414,6 +415,7 @@ class Router
         $route["customSwagger"] = $customSwagger;
         $route["swagger_object"] = $swagger_object;
         $route["exclude_from_swagger"] = $exclude_from_swagger;
+        $route['requestBody'] = $requestBody;
 
         return $route;
     }
