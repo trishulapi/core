@@ -15,8 +15,7 @@ class TrishulSwagger
     private static $instance;
 
 
-    private function __construct() {
-    }
+    private function __construct() {}
 
     public static function get_instance(): TrishulSwagger
     {
@@ -45,15 +44,15 @@ class TrishulSwagger
 
     public static function build($routes)
     {
-            $app_name = Environment::get("APP_NAME") ?? 'App';
-            $app_version = Environment::get("APP_VERSION") ?? '1.0.0';
-            $app_desc = Environment::get("APP_DESCRIPTION") ?? 'Welcome to My APIs.';
-        
-        self::set_info(["title"=>$app_name, "version"=>$app_version, "description"=>$app_desc]);
+        $app_name = Environment::get("APP_NAME") ?? 'App';
+        $app_version = Environment::get("APP_VERSION") ?? '1.0.0';
+        $app_desc = Environment::get("APP_DESCRIPTION") ?? 'Welcome to My APIs.';
+
+        self::set_info(["title" => $app_name, "version" => $app_version, "description" => $app_desc]);
         if (count($routes) > 0) {
             $swagger = TrishulSwagger::get_instance();
             foreach ($routes as $route) {
-                if($route['exclude_from_swagger']){
+                if ($route['exclude_from_swagger']) {
                     continue;
                 }
                 if (!$route['customSwagger']) {
@@ -106,14 +105,13 @@ class TrishulSwagger
                                     $response_desc = "Forbidden";
                                 } else if ($code == 404) {
                                     $response_desc = "Not Found";
-                                }else if ($code == 500) {
+                                } else if ($code == 500) {
                                     $response_desc = "Internal Server Error";
-                                }else if ($code == 504) {
+                                } else if ($code == 504) {
                                     $response_desc = "Method Not Allowed";
-                                }else if ($code == 503) {
+                                } else if ($code == 503) {
                                     $response_desc = "Service Unavailable";
-                                }
-                                 else {
+                                } else {
                                     $response_desc = "OK";
                                 }
                                 $responses[$code] = ["description" => $response_desc, "content" => [$route['consumes'] => ["schema" => $response_schema]]];
@@ -135,8 +133,15 @@ class TrishulSwagger
                     }
 
 
+
+
+                    $swagger_object = [];
+                    $swagger_object["summary"] = $summary;
+                    $swagger_object["description"] = $description;
+                    $swagger_object["responses"] = $responses;
+
                     //for request body
-                    if($route['requestBody'] != "" && $route['requestBody'] != null) {
+                    if ($route['requestBody'] != "" && $route['requestBody'] != null) {
                         $requestBody = [];
                         if (gettype($route['requestBody']) == 'array') {
                             $request_class = $route['requestBody'][0];
@@ -164,12 +169,6 @@ class TrishulSwagger
                         ];
                     }
                     //end of request body
-
-                    $swagger_object = [];
-                    $swagger_object["summary"] = $summary;
-                    $swagger_object["description"] = $description;
-                    $swagger_object["responses"] = $responses;
-
                     //for tag
                     if ($route['tag'] != "") {
                         $swagger_object["tags"] = [$route['tag']];
@@ -180,7 +179,7 @@ class TrishulSwagger
                         foreach ($route['security'] as $securityType) {
                             $swagger_object["security"][][$securityType] = [];
                         }
-                    } 
+                    }
                     //end of set security
 
                     //for parameters check {} in url 
