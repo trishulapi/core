@@ -4,6 +4,7 @@ namespace TrishulApi\Core\Swagger;
 
 use Exception;
 use ReflectionClass;
+use TrishulApi\Core\Helpers\Environment;
 
 class TrishulSwagger
 {
@@ -44,6 +45,11 @@ class TrishulSwagger
 
     public static function build($routes)
     {
+            $app_name = Environment::get("APP_NAME") ?? 'App';
+            $app_version = Environment::get("APP_VERSION") ?? '1.0.0';
+            $app_desc = Environment::get("APP_DESCRIPTION") ?? 'Welcome to My APIs.';
+        
+        self::set_info(["title"=>$app_name, "version"=>$app_version, "description"=>$app_desc]);
         if (count($routes) > 0) {
             $swagger = TrishulSwagger::get_instance();
             foreach ($routes as $route) {
