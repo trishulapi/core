@@ -135,7 +135,35 @@ class TrishulSwagger
                     }
 
 
-
+                    //for request body
+                    if($route['requestBody'] != "" && $route['requestBody'] != null) {
+                        $requestBody = [];
+                        if (gettype($route['requestBody']) == 'array') {
+                            $request_class = $route['requestBody'][0];
+                            if (class_exists($request_class)) {
+                                self::set_component($request_class);
+                                $requestBody = ['$ref' => '#/components/schemas/' . $request_class];
+                            } else {
+                                $requestBody = ['type' => 'object'];
+                            }
+                        } else {
+                            if (class_exists($route['requestBody'])) {
+                                self::set_component($route['requestBody']);
+                                $requestBody = ['$ref' => '#/components/schemas/' . $route['requestBody']];
+                            } else {
+                                $requestBody = ['type' => 'object'];
+                            }
+                        }
+                        $swagger_object["requestBody"] = [
+                            "required" => true,
+                            "content" => [
+                                $route['consumes'] => [
+                                    "schema" => $requestBody
+                                ]
+                            ]
+                        ];
+                    }
+                    //end of request body
 
                     $swagger_object = [];
                     $swagger_object["summary"] = $summary;

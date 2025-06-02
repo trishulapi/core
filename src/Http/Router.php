@@ -58,6 +58,7 @@ class Router
         $security = [],
         $consumes = "application/json",
         $produces = "application/json",
+        $requestBody = null,
         $exclude_from_swagger = false
     ): array {
         $url = $url;
@@ -78,6 +79,7 @@ class Router
         $route["customSwagger"] = $customSwagger;
         $route["swagger_object"] = $swagger_object;
         $route["exclude_from_swagger"] = $exclude_from_swagger;
+        $route['requestBody'] = $requestBody;
 
 
         array_push(self::$routes, $route);
@@ -111,6 +113,7 @@ class Router
         $security = [],
         $consumes = "application/json",
         $produces = "application/json",
+        $requestBody = null,
         $exclude_from_swagger = false
 
     ): array {
@@ -133,6 +136,7 @@ class Router
         $route["customSwagger"] = $customSwagger;
         $route["swagger_object"] = $swagger_object;
         $route["exclude_from_swagger"] = $exclude_from_swagger;
+        $route['requestBody'] = $requestBody;
 
 
         array_push(self::$routes, $route);
@@ -179,6 +183,7 @@ class Router
         $security = [],
         $consumes = "application/json",
         $produces = "application/json",
+        $requestBody = null,
         $exclude_from_swagger = false
 
     ): array {
@@ -200,6 +205,7 @@ class Router
         $route["customSwagger"] = $customSwagger;
         $route["swagger_object"] = $swagger_object;
         $route["exclude_from_swagger"] = $exclude_from_swagger;
+        $route['requestBody'] = $requestBody;
 
 
         array_push(self::$routes, $route);
@@ -236,6 +242,7 @@ class Router
         $security = [],
         $consumes = "application/json",
         $produces = "application/json",
+        $requestBody = null,
         $exclude_from_swagger = false
 
     ): array {
@@ -257,6 +264,7 @@ class Router
         $route["customSwagger"] = $customSwagger;
         $route["swagger_object"] = $swagger_object;
         $route["exclude_from_swagger"] = $exclude_from_swagger;
+        $route['requestBody'] = $requestBody;
 
 
         array_push(self::$routes, $route);
@@ -289,6 +297,7 @@ class Router
         $security = [],
         $consumes = "application/json",
         $produces = "application/json",
+        $requestBody = null,
         $exclude_from_swagger = false
 
     ): array {
@@ -310,7 +319,7 @@ class Router
         $route["customSwagger"] = $customSwagger;
         $route["swagger_object"] = $swagger_object;
         $route["exclude_from_swagger"] = $exclude_from_swagger;
-
+        $route['requestBody'] = $requestBody;
         array_push(self::$routes, $route);
         return $route;
     }
