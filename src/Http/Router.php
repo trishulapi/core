@@ -27,7 +27,7 @@ class Router
     private static $middleware_ojbects_queue = [];
     private static $global_middlewares = [];
     private static $routes = [["url" => "/docs", "method" => "GET", "middlewares" => [], 'exclude_from_swagger' => true, "callback" => TrishulSwaggerBuilder::class . "@generate_doc"]];
-    private static $exempted_routes = [];
+    private static $exempted_routes = ["/docs" =>RequestType::GET];
     private static $is_request_completed;
     private static $logger;
 
@@ -336,6 +336,8 @@ class Router
      * @param array $except - Takes urls which you want to exempt from Middlewares applied on
      * parent.
      * 
+     * $except = ["/users" => RequestType::POST]
+     * 
      * 
      * This functions also act as group urls under a parent for example. Methods of UserService class 
      * can be grouped under the parent url /users 
@@ -361,8 +363,11 @@ class Router
                 }
                 if(count($middlewares) > 0 ){
                     if(gettype($except) == 'array' && count($except) > 0){
-                        if(!in_array($raw_url, $except)){
-                            $ch['middlewares']=$middlewares;
+                        foreach($except as $excepted_url => $excepted_method){
+                            if($ch['url'] != $excepted_url && $ch['method'] != $excepted_method){
+                                $ch['middlewares'] = $middlewares;
+                                break;
+                            }
                         }
                     }
                     else{
@@ -448,7 +453,8 @@ class Router
         if ($_SERVER['REQUEST_METHOD'] != $requestMethod) {
             return;
         }
-
+        self::$middlewaresQueue = [];
+        self::$middleware_ojbects_queue = [];
 
         $request = new Request($url);
         if (gettype($middlewares) == 'object') {
@@ -456,15 +462,15 @@ class Router
         } else if (count($middlewares) > 0) {
             self::$middlewaresQueue = array_merge($middlewares);
         }
-
         if (count(self::$exempted_routes) == 0 && count(self::$global_middlewares) > 0) {
             self::$middlewaresQueue = array_merge(self::$middlewaresQueue, self::$global_middlewares);
         } else if (count(self::$exempted_routes) > 0) {
-            if (!in_array($url, self::$exempted_routes)) {
+            $exempted_routes_url = array_keys(self::$exempted_routes);
+            if(!in_array(rtrim($url, "/"), $exempted_routes_url) && $requestMethod != self::$exempted_routes[$url]) {
                 self::$middlewaresQueue = array_merge(self::$middlewaresQueue, self::$global_middlewares);
             }
+           
         }
-
         foreach (self::$middlewaresQueue as $middleware) {
             $m = new $middleware;
             if (!$m instanceof MiddlewareInterface) {
@@ -588,7 +594,7 @@ class Router
             array_push(self::$global_middlewares, $middlewares);
         }
 
-        self::$exempted_routes = $except;
+        self::$exempted_routes = array_merge(self::$exempted_routes , $except);
     }
 
     public static function get_routes(): array

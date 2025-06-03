@@ -13,6 +13,7 @@ class TrishulSwagger
 
     public static $object;
     private static $instance;
+    private static $securitySchemes = [];
 
 
     private function __construct() {}
@@ -33,12 +34,30 @@ class TrishulSwagger
             'info' => $info,
             'paths' => [],
             'components' => ["schemas" => []],
+            'tags' => [],
+            'servers' => [
+                [
+                    'url' => Environment::get("APP_URL") ?? 'http://localhost:8000',
+                    'description' => Environment::get("APP_NAME") ?? 'Trishul API Server'
+                ]
+            ]
         ];
     }
 
-    public static function set_security_schemes($securitySchemes)
+    public static function set_security_schemes(array $securitySchemes)
     {
-        self::$object['components']['securitySchemes'] = $securitySchemes;
+        self::$securitySchemes = $securitySchemes;
+        if (count(self::$securitySchemes) > 0) {
+            foreach ($securitySchemes as $key => $value) {
+                if (is_array($value)) {
+                    self::$object['components']['securitySchemes'][$key] = $value;
+                } else {
+                    throw new Exception("Security Schemes must be an array.");
+                }
+            }
+        }
+
+        // self::$object['components']['securitySchemes'][] = $securitySchemes;
     }
 
 
@@ -47,8 +66,8 @@ class TrishulSwagger
         $app_name = Environment::get("APP_NAME") ?? 'App';
         $app_version = Environment::get("APP_VERSION") ?? '1.0.0';
         $app_desc = Environment::get("APP_DESCRIPTION") ?? 'Welcome to My APIs.';
-
         self::set_info(["title" => $app_name, "version" => $app_version, "description" => $app_desc]);
+        self::set_security_schemes(self::$securitySchemes);
         if (count($routes) > 0) {
             $swagger = TrishulSwagger::get_instance();
             foreach ($routes as $route) {

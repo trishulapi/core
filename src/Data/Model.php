@@ -141,6 +141,53 @@ abstract class Model
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
+    
+    
+    /**
+     * Finds records based on the given conditions, limit, and offset.
+     * 
+     * @param array $conditions An array of conditions to filter the records.
+     * @param int $limit The maximum number of records to return.
+     * @param int $offset The offset for pagination.
+     * @return array An array of associative arrays representing the records.
+     */
+    public static function where($conditions = [], $limit = 10, $offset = 0)
+    {
+        $query = "SELECT * FROM " . static::class::$table_name;
+        if (!empty($conditions)) {
+            $query .= " WHERE " . implode(" AND ", $conditions);
+        }
+        $query .= " LIMIT :limit OFFSET :offset";
+        $pdo = DB::get_connection();
+        $stmt = $pdo->prepare($query);
+        $stmt->bindParam(':limit', $limit, \PDO::PARAM_INT);
+        $stmt->bindParam(':offset', $offset, \PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+    
+    /**
+     * Finds records based on the given conditions, limit, and offset.
+     * 
+     * @param array $conditions An array of conditions to filter the records.
+     * @param int $limit The maximum number of records to return.
+     * @param int $offset The offset for pagination.
+     * @return array An array of associative arrays representing the records.
+     */
+    public static function filter($conditions = [], $limit = 10, $offset = 0)
+    {
+        $query = "SELECT * FROM " . static::class::$table_name;
+        if (!empty($conditions)) {
+            $query .= " WHERE " . implode(" AND ", $conditions);
+        }
+        $query .= " LIMIT :limit OFFSET :offset";
+        $pdo = DB::get_connection();
+        $stmt = $pdo->prepare($query);
+        $stmt->bindParam(':limit', $limit, \PDO::PARAM_INT);
+        $stmt->bindParam(':offset', $offset, \PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
 
 
     /**
