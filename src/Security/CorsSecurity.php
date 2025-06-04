@@ -5,13 +5,14 @@ namespace TrishulApi\Core\Security;
 
 use TrishulApi\Core\Enums\HttpStatus;
 use TrishulApi\Core\Exception\UnauthorizedException;
-
+use Exception;
 /**
  * This class provides CORS configuration
  * @author Shyam Dubey
  * @since v1.0.0
  * @version v1.0.0
  */
+
 class CorsSecurity
 {
 
@@ -51,6 +52,9 @@ class CorsSecurity
             exit;
         }
         $host = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : "";
+        if(count(self::$allowed_domains) == 0){
+        	throw new Exception('Please provide allowed domains array in index.php file as $app->set_allowed_domains(["*"])');
+        }
         if (!in_array("*", self::$allowed_domains)) {
             if (!in_array($host, self::$allowed_domains)) {
                 throw new UnauthorizedException("Invalid Domain. Add this domain [".$host."] in allowed_domains");
