@@ -52,7 +52,7 @@ class CorsSecurity
             exit;
         }
         $host = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : "";
-        if(count(self::$allowed_domains) == 0){
+        if(self::$allowed_domains == null || count(self::$allowed_domains) == 0){
         	throw new Exception('Please provide allowed domains array in index.php file as $app->set_allowed_domains(["*"])');
         }
         if (!in_array("*", self::$allowed_domains)) {
