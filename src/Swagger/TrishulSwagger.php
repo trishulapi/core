@@ -94,7 +94,8 @@ class TrishulSwagger
                             if (class_exists($response_class)) {
                                 self::set_component($response_class);
                                 $response_schema['type'] = 'array';
-                                $response_schema["items"] = ['$ref' => '#/components/schemas/' . $response_class];
+                                $schemaName = str_replace('\\', '.', $response_class);
+                                $response_schema["items"] = ['$ref' => '#/components/schemas/' . $schemaName];
                             } else {
                                 $response_schema['type'] = 'object';
                                 $response_schema["items"] = ['type' => 'array'];
@@ -166,14 +167,16 @@ class TrishulSwagger
                             $request_class = $route['requestBody'][0];
                             if (class_exists($request_class)) {
                                 self::set_component($request_class);
-                                $requestBody = ['$ref' => '#/components/schemas/' . $request_class];
+                                $schemaName = str_replace('\\', '.', $request_class);
+                                $requestBody = ['$ref' => '#/components/schemas/' . $schemaName];
                             } else {
                                 $requestBody = ['type' => 'object'];
                             }
                         } else {
                             if (class_exists($route['requestBody'])) {
                                 self::set_component($route['requestBody']);
-                                $requestBody = ['$ref' => '#/components/schemas/' . $route['requestBody']];
+                                $schemaName = str_replace('\\', '.', $route['requestBody']);
+                                $requestBody = ['$ref' => '#/components/schemas/' . $schemaName];
                             } else {
                                 $requestBody = ['type' => 'object'];
                             }
@@ -252,7 +255,12 @@ class TrishulSwagger
 
     private static function addPath($url, $object)
     {
-        self::$object['paths'][$url] = $object;
+        if (strlen($url) > 0) {
+            if ($url[0] != '/') {
+                $url = '/' . $url;
+            }
+            self::$object['paths'][$url] = $object;
+        }
     }
 
     public function prepare()
@@ -318,6 +326,7 @@ class TrishulSwagger
             if (!array_key_exists($model, self::$object['components']['schemas'])) {
                 if (class_exists($model)) {
                     $relectionclass = new ReflectionClass($model);
+                    $schemaName = str_replace('\\', '.', $model);
                     $properties = $relectionclass->getProperties();
                     self::$object['components']['schemas'][$model] = ["type" => 'object', 'properties' => []];
 

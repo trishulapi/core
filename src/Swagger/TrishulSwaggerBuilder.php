@@ -6,16 +6,16 @@ use TrishulApi\Core\Http\Router;
 
 class TrishulSwaggerBuilder
 {
-    private $orion_swagger;
+    private $trishul_swagger;
     public function __construct()
     {
-        $this->orion_swagger = TrishulSwagger::get_instance();
+        $this->trishul_swagger = TrishulSwagger::get_instance();
     }
 
 
     public function generate_doc(){
-        $this->orion_swagger->build(Router::get_routes());
-        $this->orion_swagger->prepare();
+        $this->trishul_swagger->build(Router::get_routes());
+        $this->trishul_swagger->prepare();
         readfile(__DIR__."/../../swagger_ui/index.html");
         die();
     }

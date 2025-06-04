@@ -10,6 +10,7 @@ use TrishulApi\Core\Exception\InvalidResponseTypeException;
 use TrishulApi\Core\Exception\MethodNotFoundException;
 use TrishulApi\Core\Exception\NotAnInstanceException;
 use TrishulApi\Core\Exception\ResourceNotFoundException;
+use TrishulApi\Core\Helpers\Environment;
 use TrishulApi\Core\Log\LoggerFactory;
 use TrishulApi\Core\Middleware\MiddlewareInterface;
 use TrishulApi\Core\Swagger\TrishulSwaggerBuilder;
@@ -540,6 +541,18 @@ class Router
         self::$logger = LoggerFactory::get_logger(self::class);
 
         $routeUri = $_SERVER['REQUEST_URI'];
+        $host_path = Environment::get("HOST_PATH") ?? "";
+        if( $host_path == ""){
+            $host_path = "/";
+        }
+        if($host_path != "/" && strpos($routeUri, $host_path) === 0){  
+            $routeUri = substr($routeUri, strlen($host_path));
+        }
+        if (strpos($routeUri, "?") !== false) {
+            $routeUri = explode("?", $routeUri)[0];
+        }
+        $routeUri = rtrim($routeUri, "/");
+        
         self::$logger->info("Incoming Request[" . $_SERVER['REQUEST_METHOD'] . "] on Url: " . $routeUri . " ");
 
         if (count(self::$routes) > 0) {
