@@ -28,7 +28,7 @@ class Router
     private static $middleware_ojbects_queue = [];
     private static $global_middlewares = [];
     private static $routes = [["url" => "/docs", "method" => "GET", "middlewares" => [], 'exclude_from_swagger' => true, "callback" => TrishulSwaggerBuilder::class . "@generate_doc"]];
-    private static $exempted_routes = ["/docs" =>RequestType::GET];
+    private static $exempted_routes = ["/docs" => RequestType::GET];
     private static $is_request_completed;
     private static $logger;
 
@@ -85,7 +85,6 @@ class Router
 
         array_push(self::$routes, $route);
         return $route;
-
     }
 
     /**
@@ -142,7 +141,6 @@ class Router
 
         array_push(self::$routes, $route);
         return $route;
-
     }
 
     /**
@@ -211,7 +209,6 @@ class Router
 
         array_push(self::$routes, $route);
         return $route;
-
     }
 
     /**
@@ -270,7 +267,6 @@ class Router
 
         array_push(self::$routes, $route);
         return $route;
-
     }
 
     /**
@@ -349,7 +345,7 @@ class Router
      * @since v1.0.0 
      * @version v1.0.0 
      */
-    public static function parent($url, array $childrens, $middlewares = [], $except=[]):void
+    public static function parent($url, array $childrens, $middlewares = [], $except = []): void
     {
         if ($childrens != null) {
             if (gettype($childrens) != 'array') {
@@ -359,20 +355,19 @@ class Router
             foreach ($childrens as $ch) {
                 $raw_url = $ch['url'];
                 $ch['url'] = $url . $ch['url'];
-                if($ch['tag'] == ""){
+                if ($ch['tag'] == "") {
                     $ch['tag'] = ucfirst(trim($url, "/"));
                 }
-                if(count($middlewares) > 0 ){
-                    if(gettype($except) == 'array' && count($except) > 0){
-                        foreach($except as $excepted_url => $excepted_method){
-                            if($ch['url'] != $excepted_url && $ch['method'] != $excepted_method){
+                if (count($middlewares) > 0) {
+                    if (gettype($except) == 'array' && count($except) > 0) {
+                        foreach ($except as $excepted_url => $excepted_method) {
+                            if ($ch['url'] != $excepted_url && $ch['method'] != $excepted_method) {
                                 $ch['middlewares'] = $middlewares;
                                 break;
                             }
                         }
-                    }
-                    else{
-                        $ch['middlewares']=$middlewares;
+                    } else {
+                        $ch['middlewares'] = $middlewares;
                     }
                 }
                 array_push(self::$routes, $ch);
@@ -437,11 +432,10 @@ class Router
      * @since v1.0.0
      * @version v1.0.0
      */
-    public static function include($routes){
-        if($routes != null)
-        {
-            foreach($routes as $route)
-            {
+    public static function include($routes)
+    {
+        if ($routes != null) {
+            foreach ($routes as $route) {
                 array_push(self::$routes, $route);
             }
         }
@@ -456,7 +450,6 @@ class Router
         }
         self::$middlewaresQueue = [];
         self::$middleware_ojbects_queue = [];
-
         $request = new Request($url);
         if (gettype($middlewares) == 'object') {
             array_push(self::$middlewaresQueue, $middlewares);
@@ -467,10 +460,11 @@ class Router
             self::$middlewaresQueue = array_merge(self::$middlewaresQueue, self::$global_middlewares);
         } else if (count(self::$exempted_routes) > 0) {
             $exempted_routes_url = array_keys(self::$exempted_routes);
-            if(!in_array(rtrim($url, "/"), $exempted_routes_url) && $requestMethod != self::$exempted_routes[$url]) {
-                self::$middlewaresQueue = array_merge(self::$middlewaresQueue, self::$global_middlewares);
+            if ($url !== "/") {
+                if (!in_array(rtrim($url, "/"), $exempted_routes_url) && $requestMethod != self::$exempted_routes[$url]) {
+                    self::$middlewaresQueue = array_merge(self::$middlewaresQueue, self::$global_middlewares);
+                }
             }
-           
         }
         foreach (self::$middlewaresQueue as $middleware) {
             $m = new $middleware;
@@ -542,17 +536,17 @@ class Router
 
         $routeUri = $_SERVER['REQUEST_URI'];
         $host_path = Environment::get("HOST_PATH") ?? "";
-        if( $host_path == ""){
+        if ($host_path == "") {
             $host_path = "/";
         }
-        if($host_path != "/" && strpos($routeUri, $host_path) === 0){  
+        if ($host_path != "/" && strpos($routeUri, $host_path) === 0) {
             $routeUri = substr($routeUri, strlen($host_path));
         }
         if (strpos($routeUri, "?") !== false) {
             $routeUri = explode("?", $routeUri)[0];
         }
         $routeUri = rtrim($routeUri, "/");
-        
+
         self::$logger->info("Incoming Request[" . $_SERVER['REQUEST_METHOD'] . "] on Url: " . $routeUri . " ");
 
         if (count(self::$routes) > 0) {
@@ -607,7 +601,7 @@ class Router
             array_push(self::$global_middlewares, $middlewares);
         }
 
-        self::$exempted_routes = array_merge(self::$exempted_routes , $except);
+        self::$exempted_routes = array_merge(self::$exempted_routes, $except);
     }
 
     public static function get_routes(): array
@@ -615,3 +609,4 @@ class Router
         return self::$routes;
     }
 }
+

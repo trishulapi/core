@@ -6,6 +6,8 @@ namespace TrishulApi\Core\Security;
 use TrishulApi\Core\Enums\HttpStatus;
 use TrishulApi\Core\Exception\UnauthorizedException;
 use Exception;
+use TrishulApi\Core\Helpers\Environment;
+
 /**
  * This class provides CORS configuration
  * @author Shyam Dubey
@@ -16,7 +18,7 @@ use Exception;
 class CorsSecurity
 {
 
-    private static $allowed_domains;
+    private static $allowed_domains = [];
 
 
 
@@ -51,13 +53,29 @@ class CorsSecurity
             http_response_code(HttpStatus::NO_CONTENT->value);
             exit;
         }
-        $host = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : "";
-        if(self::$allowed_domains == null || count(self::$allowed_domains) == 0){
-        	throw new Exception('Please provide allowed domains array in index.php file as $app->set_allowed_domains(["*"])');
+        $host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : "";
+        $allowed_domains_env = Environment::get('ALLOWED_DOMAINS');
+        try{
+            $allowed_domains_env = json_decode($allowed_domains_env);
+        }
+        catch(Exception $e){
+            throw new Exception("Please declare ALLOWED_DOMAINS in [] brackets. For Example ['localhost:9000']");
+        }
+
+        
+        if ($allowed_domains_env != null || !empty($allowed_domains_env)) {
+            if (gettype($allowed_domains_env) == 'array') {
+                self::$allowed_domains = array_merge(self::$allowed_domains, $allowed_domains_env);
+            } else {
+                array_push(self::$allowed_domains, $allowed_domains_env);
+            }
+        }
+        if (self::$allowed_domains == null || count(self::$allowed_domains) == 0) {
+            throw new Exception('Please provide allowed domains array in index.php file as $app->set_allowed_domains(["*"])');
         }
         if (!in_array("*", self::$allowed_domains)) {
             if (!in_array($host, self::$allowed_domains)) {
-                throw new UnauthorizedException("Invalid Domain. Add this domain [".$host."] in allowed_domains");
+                throw new UnauthorizedException("Invalid Domain. Add this domain [" . $host . "] in allowed_domains");
             }
         }
     }
@@ -68,3 +86,4 @@ class CorsSecurity
         return self::$allowed_domains;
     }
 }
+
