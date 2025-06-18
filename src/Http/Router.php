@@ -460,7 +460,7 @@ class Router
             self::$middlewaresQueue = array_merge(self::$middlewaresQueue, self::$global_middlewares);
         } else if (count(self::$exempted_routes) > 0) {
             $exempted_routes_url = array_keys(self::$exempted_routes);
-            if ($url !== "/") {
+            if (isset(self::$exempted_routes[$url])) {
                 if (!in_array(rtrim($url, "/"), $exempted_routes_url) && $requestMethod != self::$exempted_routes[$url]) {
                     self::$middlewaresQueue = array_merge(self::$middlewaresQueue, self::$global_middlewares);
                 }
@@ -609,4 +609,5 @@ class Router
         return self::$routes;
     }
 }
+
 
