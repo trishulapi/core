@@ -3,6 +3,7 @@
 
 namespace TrishulApi\Core\Exception;
 
+use Exception;
 use InvalidArgumentException;
 use TrishulApi\Core\Enums\HttpStatus;
 use TrishulApi\Core\Http\Response;
@@ -59,7 +60,7 @@ class ExceptionHandler implements ExceptionHandlerInterface
         $message = $ex->getMessage();
         $stacktrace = $ex->getTraceAsString();
         $statusCode = $ex->getCode();
-        if($statusCode == 0){
+        if(!in_array($statusCode,HttpStatus::cases())){
         	$statusCode = 500;
         }
         $response["message"] = $message;
@@ -72,3 +73,4 @@ class ExceptionHandler implements ExceptionHandlerInterface
         Response::out(HttpStatus::from($statusCode), $response);
     }
 }
+

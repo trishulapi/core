@@ -2,6 +2,7 @@
 
 namespace TrishulApi\Core\Http;
 
+use Exception;
 use InvalidArgumentException;
 use TrishulApi\Core\Di\Container;
 use TrishulApi\Core\Enums\HttpStatus;
@@ -358,18 +359,22 @@ class Router
                 if ($ch['tag'] == "") {
                     $ch['tag'] = ucfirst(trim($url, "/"));
                 }
-                if (count($middlewares) > 0) {
+                $ch['middlewares'] = [];
+                if(count(self::$global_middlewares) > 0 && !in_array($ch['url'], array_keys(self::$exempted_routes)) && $ch['method'] != self::$exempted_routes[$ch['url']]){
+                        $ch['middlewares'] = array_merge($ch['middlewares'] , self::$global_middlewares);
+                }
+                if (gettype($middlewares) == 'array' && count($middlewares) > 0) {
                     if (gettype($except) == 'array' && count($except) > 0) {
                         foreach ($except as $excepted_url => $excepted_method) {
                             if ($ch['url'] != $excepted_url && $ch['method'] != $excepted_method) {
-                                $ch['middlewares'] = $middlewares;
-                                break;
+                                $ch['middlewares'] = array_merge($ch['middlewares'] , $middlewares);
                             }
                         }
                     } else {
-                        $ch['middlewares'] = $middlewares;
+                        $ch['middlewares'] = array_merge($ch['middlewares'] , $middlewares);
                     }
                 }
+                
                 array_push(self::$routes, $ch);
             }
         }
@@ -444,7 +449,6 @@ class Router
 
     private static function handle($url, $callback, $requestMethod, $params = [], $middlewares = []): void
     {
-
         if ($_SERVER['REQUEST_METHOD'] != $requestMethod) {
             return;
         }

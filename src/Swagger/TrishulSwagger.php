@@ -328,12 +328,12 @@ class TrishulSwagger
                     $relectionclass = new ReflectionClass($model);
                     $schemaName = str_replace('\\', '.', $model);
                     $properties = $relectionclass->getProperties();
-                    self::$object['components']['schemas'][$model] = ["type" => 'object', 'properties' => []];
+                    self::$object['components']['schemas'][$schemaName] = ["type" => 'object', 'properties' => []];
 
                     foreach ($properties as $property) {
                         $type = $property->getType() != null ? $property->getType()->getName() : "object";
                         try {
-                            self::$object['components']['schemas'][$model]['properties'][$property->name] = ['type' => $type];
+                            self::$object['components']['schemas'][$schemaName]['properties'][$property->name] = ['type' => $type];
                         } catch (Exception $ex) {
                             error_log($ex);
                             throw new Exception($ex->getMessage());
@@ -344,3 +344,4 @@ class TrishulSwagger
         }
     }
 }
+

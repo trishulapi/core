@@ -94,3 +94,4 @@ class App
         return self::$env_path;
     }
 }
+
