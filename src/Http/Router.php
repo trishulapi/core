@@ -2,7 +2,6 @@
 
 namespace TrishulApi\Core\Http;
 
-use Exception;
 use InvalidArgumentException;
 use TrishulApi\Core\Di\Container;
 use TrishulApi\Core\Enums\HttpStatus;
@@ -14,7 +13,6 @@ use TrishulApi\Core\Exception\ResourceNotFoundException;
 use TrishulApi\Core\Helpers\Environment;
 use TrishulApi\Core\Log\LoggerFactory;
 use TrishulApi\Core\Middleware\MiddlewareInterface;
-use TrishulApi\Core\Swagger\TrishulSwaggerBuilder;
 
 /**
  * This class contains functions for handling requests in application.
@@ -28,7 +26,7 @@ class Router
     private static $middlewaresQueue = [];
     private static $middleware_ojbects_queue = [];
     private static $global_middlewares = [];
-    private static $routes = [["url" => "/docs", "method" => "GET", "middlewares" => [], 'exclude_from_swagger' => true, "callback" => TrishulSwaggerBuilder::class . "@generate_doc"]];
+    private static $routes = [];
     private static $exempted_routes = ["/docs" => RequestType::GET];
     private static $is_request_completed;
     private static $logger;
@@ -359,22 +357,18 @@ class Router
                 if ($ch['tag'] == "") {
                     $ch['tag'] = ucfirst(trim($url, "/"));
                 }
-                $ch['middlewares'] = [];
-                if(count(self::$global_middlewares) > 0 && !in_array($ch['url'], array_keys(self::$exempted_routes)) && $ch['method'] != self::$exempted_routes[$ch['url']]){
-                        $ch['middlewares'] = array_merge($ch['middlewares'] , self::$global_middlewares);
-                }
-                if (gettype($middlewares) == 'array' && count($middlewares) > 0) {
+                if (count($middlewares) > 0) {
                     if (gettype($except) == 'array' && count($except) > 0) {
                         foreach ($except as $excepted_url => $excepted_method) {
                             if ($ch['url'] != $excepted_url && $ch['method'] != $excepted_method) {
-                                $ch['middlewares'] = array_merge($ch['middlewares'] , $middlewares);
+                                $ch['middlewares'] = $middlewares;
+                                break;
                             }
                         }
                     } else {
-                        $ch['middlewares'] = array_merge($ch['middlewares'] , $middlewares);
+                        $ch['middlewares'] = $middlewares;
                     }
                 }
-                
                 array_push(self::$routes, $ch);
             }
         }
@@ -449,6 +443,7 @@ class Router
 
     private static function handle($url, $callback, $requestMethod, $params = [], $middlewares = []): void
     {
+
         if ($_SERVER['REQUEST_METHOD'] != $requestMethod) {
             return;
         }
@@ -613,5 +608,6 @@ class Router
         return self::$routes;
     }
 }
+
 
 

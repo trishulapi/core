@@ -4,10 +4,11 @@ namespace TrishulApi\Core;
 
 use InvalidArgumentException;
 use TrishulApi\Core\Exception\ExceptionHandler;
+use TrishulApi\Core\Helpers\Environment;
 use TrishulApi\Core\Http\Router;
 use TrishulApi\Core\Log\LoggerFactory;
 use TrishulApi\Core\Security\CorsSecurity;
-use TrishulApi\Core\Swagger\OrionSwagger;
+use TrishulApi\Core\Swagger\TrishulSwaggerBuilder;
 use TrishulApi\Core\Swagger\TrishulSwagger;
 
 /**
@@ -38,7 +39,9 @@ class App
 
         ExceptionHandler::init($this->global_exception_handler_class);
         CorsSecurity::init();
-
+        if(Environment::get('ENABLE_SWAGGER')){
+            Router::get("/docs", TrishulSwaggerBuilder::class . "@generate_doc", exclude_from_swagger:true);
+        }
         Router::init();
 
     }

@@ -3,12 +3,12 @@
 
 namespace TrishulApi\Core\Exception;
 
-use Exception;
 use InvalidArgumentException;
 use TrishulApi\Core\Enums\HttpStatus;
 use TrishulApi\Core\Http\Response;
 use TrishulApi\Core\Log\LoggerFactory;
 use Throwable;
+use TrishulApi\Core\Helpers\Environment;
 
 /**
  * This class handles the Exceptions globally and generates the response based on the exception.
@@ -60,16 +60,18 @@ class ExceptionHandler implements ExceptionHandlerInterface
         $message = $ex->getMessage();
         $stacktrace = $ex->getTraceAsString();
         $statusCode = $ex->getCode();
-        if(!in_array($statusCode,HttpStatus::cases())){
-        	$statusCode = 500;
+        if ($statusCode == 0) {
+            $statusCode = 500;
         }
         $response["message"] = $message;
-        $response["stacktrace"] = $stacktrace;
+        if (Environment::get('SHOW_STACKTRACE_IN_EXCEPTION')) {
+            $response["stacktrace"] = $stacktrace;
+        }
         $response["statusCode"] = $statusCode;
         $response["time"] = time();
         error_log($message . " | " . $stacktrace);
         self::$logger->error(json_encode($response));
-        self::$logger->info("Sending Response [".$statusCode."]");
+        self::$logger->info("Sending Response [" . $statusCode . "]");
         Response::out(HttpStatus::from($statusCode), $response);
     }
 }
