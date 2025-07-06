@@ -2,8 +2,10 @@
 
 namespace TrishulApi\Core\Http;
 
+use ResourceBundle;
 use TrishulApi\Core\Enums\HttpStatus;
 use TrishulApi\Core\Exception\InvalidResponseTypeException;
+use TrishulApi\Core\Exception\ResourceNotFoundException;
 
 /**
  * This class is responsible for returning the response back to the user.
@@ -32,7 +34,6 @@ class Response
         self::$session = new Session;
         self::$header = new Header(Header::FOR_RESPONSE);
         self::$body = new ResponseBody($data);
-
     }
 
 
@@ -55,13 +56,43 @@ class Response
 
 
     /**
+     * Ensures that file is being sent to the user. Takes multiple params
+     * @param string $content_desc Content Description
+     * @param string $content_type Content Type
+     * @param string $file File name along with the full path.
+     * @param string $content_length Content Length
+     * @param string $content_disposition Content-Disposition attachement | inline 
+     * @since v1.0.1 
+     * @version v1.0.1 
+     * @author Shyam Dubey
+     */
+    public static function file($content_desc, $content_type, $file, $content_length, $content_disposition = "attachment", $cache_control = "must-revalidate", $pragma = "public", $expires = 0)
+    {
+        if (file_exists($file)) {
+            header('Content-Description: '.$content_desc);
+            header('Content-Type: '.$content_type); // or actual MIME type
+            header('Content-Disposition: '.$content_disposition.'; filename="' . basename($file) . '"');
+            header('Content-Length: ' . $content_length);
+            header('Cache-Control: '.$cache_control);
+            header('Pragma: '.$pragma);
+            header('Expires: '.$expires);
+            flush(); // Clean output buffer
+            readfile($file);
+            exit;
+        } else {
+            throw new ResourceNotFoundException("File not found");
+        }
+    }
+
+
+    /**
      * Return the data in the response
      * 
      * @author Shyam Dubey
      * @since v1.0.0
      * @version v1.0.0
      */
-    public static function get_body():ResponseBody
+    public static function get_body(): ResponseBody
     {
         return self::$body;
     }
@@ -130,11 +161,11 @@ class Response
     }
 
 
-    public static function get_cookie():Cookie{
-        if(self::$cookie == null){
+    public static function get_cookie(): Cookie
+    {
+        if (self::$cookie == null) {
             return self::$cookie = new Cookie;
-        }
-        else{
+        } else {
             echo "null";
 
             return self::$cookie;
@@ -142,13 +173,14 @@ class Response
     }
 
 
-    public static function set_cookie(Cookie $cookie) :void 
+    public static function set_cookie(Cookie $cookie): void
     {
         self::$cookie = $cookie;
     }
 
 
-    public static function get_session():Session{
+    public static function get_session(): Session
+    {
         self::$session = new Session;
         return self::$session;
     }

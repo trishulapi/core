@@ -26,6 +26,7 @@ class Request
     private static ?Session $session = null;
     private static ?Cookie $cookie = null;
     private static ?PathVariable $path = null;
+    private static ?RequestFile $file = null;
 
 
     public function __construct(string $url)
@@ -37,6 +38,7 @@ class Request
         self::$session = new Session;
         self::$cookie = new Cookie;
         self::$path = new PathVariable(null);
+        self::$file = new RequestFile($_FILES);
     }
 
     /**
@@ -236,5 +238,11 @@ class Request
     public function path():PathVariable
     {
         return self::$path;
+    }
+
+
+    public function file():RequestFile
+    {
+        return self::$file;
     }
 }

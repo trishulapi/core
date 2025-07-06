@@ -60,7 +60,8 @@ class ExceptionHandler implements ExceptionHandlerInterface
         $message = $ex->getMessage();
         $stacktrace = $ex->getTraceAsString();
         $statusCode = $ex->getCode();
-        if ($statusCode == 0) {
+        $supported_codes = HttpStatus::cases();
+        if (!in_array($statusCode, $supported_codes)) {
             $statusCode = 500;
         }
         $response["message"] = $message;

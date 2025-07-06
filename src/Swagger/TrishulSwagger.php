@@ -93,9 +93,13 @@ class TrishulSwagger
                             $response_class = $route['response_type'][0];
                             if (class_exists($response_class)) {
                                 self::set_component($response_class);
-                                $response_schema['type'] = 'array';
                                 $schemaName = str_replace('\\', '.', $response_class);
-                                $response_schema["items"] = ['$ref' => '#/components/schemas/' . $schemaName];
+                                if ($route['is_response_array']) {
+                                    $response_schema['type'] = 'array';
+                                    $response_schema["items"] = ['$ref' => '#/components/schemas/' . $schemaName];
+                                } else {
+                                    $response_schema = ['$ref' => '#/components/schemas/' . $schemaName];
+                                }
                             } else {
                                 $response_schema['type'] = 'object';
                                 $response_schema["items"] = ['type' => 'array'];
@@ -103,6 +107,13 @@ class TrishulSwagger
                         } else {
                             if (class_exists($route['response_type'])) {
                                 self::set_component($route['response_type']);
+                                $schemaName = str_replace('\\', '.', $route['response_type']);
+                                if ($route['is_response_array']) {
+                                    $response_schema['type'] = 'array';
+                                    $response_schema["items"] = ['$ref' => '#/components/schemas/' . $schemaName];
+                                } else {
+                                    $response_schema = ['$ref' => '#/components/schemas/' . $schemaName];
+                                }
                             } else {
                                 $response_schema['type'] = 'object';
                                 $response_schema["items"] = ['type' => 'array'];

@@ -52,6 +52,7 @@ class Router
         $description = "",
         $response_codes = [],
         $response_type = "",
+        $is_response_array = false,
         $tag = "",
         $customSwagger = false,
         $swagger_object = "",
@@ -72,6 +73,7 @@ class Router
         $route["description"] = $description;
         $route["response_codes"] = $response_codes;
         $route["response_type"] = $response_type;
+        $route["is_response_array"] = $is_response_array;
         $route["consumes"] = $consumes;
         $route["produces"] = $produces;
         $route["tag"] = $tag;
@@ -106,6 +108,7 @@ class Router
         $description = "",
         $response_codes = [],
         $response_type = "",
+        $is_response_array = false,
         $tag = "",
         $customSwagger = false,
         $swagger_object = "",
@@ -128,6 +131,7 @@ class Router
         $route["summary"] = $summary;
         $route["response_codes"] = $response_codes;
         $route["response_type"] = $response_type;
+        $route["is_response_array"] = $is_response_array;
         $route["consumes"] = $consumes;
         $route["produces"] = $produces;
         $route["tag"] = $tag;
@@ -175,6 +179,7 @@ class Router
         $description = "",
         $response_codes = [],
         $response_type = "",
+        $is_response_array = false,
         $tag = "",
         $customSwagger = false,
         $swagger_object = "",
@@ -196,6 +201,7 @@ class Router
         $route["description"] = $description;
         $route["response_codes"] = $response_codes;
         $route["response_type"] = $response_type;
+        $route["is_response_array"] = $is_response_array;
         $route["consumes"] = $consumes;
         $route["produces"] = $produces;
         $route["tag"] = $tag;
@@ -233,6 +239,7 @@ class Router
         $description = "",
         $response_codes = [],
         $response_type = "",
+        $is_response_array = false,
         $tag = "",
         $customSwagger = false,
         $swagger_object = "",
@@ -254,6 +261,7 @@ class Router
         $route["description"] = $description;
         $route["response_codes"] = $response_codes;
         $route["response_type"] = $response_type;
+        $route["is_response_array"] = $is_response_array;
         $route["consumes"] = $consumes;
         $route["produces"] = $produces;
         $route["tag"] = $tag;
@@ -287,6 +295,7 @@ class Router
         $description = "",
         $response_codes = [],
         $response_type = "",
+        $is_response_array = false,
         $tag = "",
         $customSwagger = false,
         $swagger_object = "",
@@ -308,6 +317,7 @@ class Router
         $route["description"] = $description;
         $route["response_codes"] = $response_codes;
         $route["response_type"] = $response_type;
+        $route["is_response_array"] = $is_response_array;
         $route["consumes"] = $consumes;
         $route["produces"] = $produces;
         $route["tag"] = $tag;
