@@ -401,6 +401,7 @@ class Router
         $description = "",
         $response_codes = [],
         $response_type = "",
+        $is_response_array = false,
         $tag = "",
         $customSwagger = false,
         $swagger_object = "",
@@ -418,6 +419,7 @@ class Router
         $route["description"] = $description;
         $route["response_codes"] = $response_codes;
         $route["response_type"] = $response_type;
+        $route["is_response_array"] = $is_response_array;
         $route["consumes"] = $consumes;
         $route["produces"] = $produces;
         $route["tag"] = $tag;
@@ -494,7 +496,6 @@ class Router
         $controller = $arr[0];
         $controller_method = $arr[1];
 
-
         if (class_exists($controller)) {
             if (!method_exists($controller, $controller_method)) {
                 throw new MethodNotFoundException($controller_method . " method not found in class " . $controller);
@@ -514,11 +515,12 @@ class Router
             }
             if ($response instanceof Response) {
                 if ($response->get_return_type() == Response::RETURN_TYPE_JSON) {
+                    self::$is_request_completed = true;
+
                     self::$logger->info("Sending Response [" . $response->get_status_code() . "]");
                     header("content-type:application/json");
                     http_response_code($response->get_status_code());
                     echo json_encode($response->get_body()->data());
-                    self::$is_request_completed = true;
                     die();
                 } else {
                     throw new InvalidResponseTypeException("Invalid Response Type. It should be Response::json()");
@@ -567,13 +569,31 @@ class Router
                     $explode = explode("?", $url);
                     $url = trim($explode[0], "/");
                 }
-                $patternRegex = preg_replace('/\{(\w+)\}/', '(?P<\1>[^/]+)', trim($route['url'], '/'));
-                $patternRegex = "@^" . $patternRegex . "$@";
 
-                if (preg_match($patternRegex, $url, $matches)) {
-                    $params = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
+                // First check if route is static (no {} placeholders)
+                if (strpos($url, '{') === false && $url === trim($route['url'], "/") && $route['method'] === $_SERVER['REQUEST_METHOD']) {
                     $route_found = true;
-                    self::handle($route['url'], $route['callback'], $route['method'], $params, $middleware = $route['middlewares']);
+                    self::handle($route['url'], $route['callback'], $route['method'], [], $middleware = $route['middlewares']);
+                    break;
+                }
+            }
+            if (!$route_found) {
+                foreach (self::$routes as $route) {
+                    $url = trim($routeUri, '/');
+                    //if ? in the url
+                    if (strpos($url, "?")) {
+                        $explode = explode("?", $url);
+                        $url = trim($explode[0], "/");
+                    }
+
+                    $patternRegex = preg_replace('/\{(\w+)\}/', '(?P<\1>[^/]+)', trim($route['url'], '/'));
+                    $patternRegex = "@^" . $patternRegex . "$@";
+
+                    if (preg_match($patternRegex, $url, $matches)) {
+                        $params = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
+                        $route_found = true;
+                        self::handle($route['url'], $route['callback'], $route['method'], $params, $middleware = $route['middlewares']);
+                    }
                 }
             }
             if (!$route_found) {
@@ -618,6 +638,4 @@ class Router
         return self::$routes;
     }
 }
-
-
 
