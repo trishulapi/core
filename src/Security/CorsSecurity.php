@@ -53,7 +53,10 @@ class CorsSecurity
             http_response_code(HttpStatus::NO_CONTENT->value);
             exit;
         }
-        $host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : "";
+        $host = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : "";
+        if(empty($host)){
+            $host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : "";
+        }
         $allowed_domains_env = Environment::get('ALLOWED_DOMAINS');
         try{
             $allowed_domains_env = json_decode($allowed_domains_env);
@@ -86,4 +89,5 @@ class CorsSecurity
         return self::$allowed_domains;
     }
 }
+
 
