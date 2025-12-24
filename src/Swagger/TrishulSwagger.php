@@ -71,6 +71,9 @@ class TrishulSwagger
         if (count($routes) > 0) {
             $swagger = TrishulSwagger::get_instance();
             foreach ($routes as $route) {
+                if(is_null($route)){
+                    continue;
+                }
                 if ($route['exclude_from_swagger']) {
                     continue;
                 }

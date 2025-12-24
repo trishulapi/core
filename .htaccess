@@ -1,0 +1,15 @@
+RewriteEngine On
+
+# Don't rewrite if the request is for an existing directory
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# If a .php file exists for the given path (e.g., /about => about.php), rewrite it
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^([a-zA-Z0-9]+)$ $1.php [NC,L]
+
+# Allow access to vendor folder — exclude it from rewrites
+RewriteCond %{REQUEST_URI} ^/vendor/
+RewriteRule ^vendor/(.*)$ vendor/$1 [L]
+
+# All other requests go to index.php with route param
+RewriteRule ^([a-zA-Z0-9-/]+)$ index.php?route=$1 [NC,L, QSA]

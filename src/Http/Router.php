@@ -564,6 +564,9 @@ class Router
             $route_found = false;
             foreach (self::$routes as $route) {
                 $url = trim($routeUri, '/');
+                if(is_null($route)){
+                    continue;
+                }
                 //if ? in the url
                 if (strpos($url, "?")) {
                     $explode = explode("?", $url);
