@@ -582,13 +582,15 @@ class Router
             }
             if (!$route_found) {
                 foreach (self::$routes as $route) {
+                    if($route == null || $route['url'] == null){
+                        continue;
+                    }
                     $url = trim($routeUri, '/');
                     //if ? in the url
                     if (strpos($url, "?")) {
                         $explode = explode("?", $url);
                         $url = trim($explode[0], "/");
                     }
-
                     $patternRegex = preg_replace('/\{(\w+)\}/', '(?P<\1>[^/]+)', trim($route['url'], '/'));
                     $patternRegex = "@^" . $patternRegex . "$@";
 
