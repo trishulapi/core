@@ -9,6 +9,7 @@ use TrishulApi\Core\Http\Header;
 use TrishulApi\Core\Http\RequestBody;
 use TrishulApi\Core\Http\Cookie;
 use TrishulApi\Core\Http\PathVariable;
+use TrishulApi\Core\Request\RequestMethod;
 
 /**
  * Handles all requests in this framework. This class is useful for getting URL Params, Request Body and Request Headers, 
@@ -19,26 +20,32 @@ use TrishulApi\Core\Http\PathVariable;
 class Request
 {
 
-    private static ?QueryParams $query_params = null;
-    private static ?Header $header = null;
-    private static ?RequestBody $body = null;
-    private static string $url;
-    private static ?Session $session = null;
-    private static ?Cookie $cookie = null;
-    private static ?PathVariable $path = null;
-    private static ?RequestFile $file = null;
+    private ?QueryParams $query_params = null;
+    private ?Header $header = null;
+    private ?RequestBody $body = null;
+    private string $url;
+    private ?Session $session = null;
+    private ?Cookie $cookie = null;
+    private ?PathVariable $path = null;
+    private ?RequestFile $file = null;
+
+    private RequestMethod $request_method;
+
+    private bool $is_request_completed = false;
 
 
     public function __construct(string $url)
     {
-        self::$query_params = new QueryParams($_REQUEST);
-        self::$header = new Header();
-        self::$body = self::body();
-        self::$url = $url;
-        self::$session = new Session;
-        self::$cookie = new Cookie;
-        self::$path = new PathVariable(null);
-        self::$file = new RequestFile($_FILES);
+        $this->query_params = new QueryParams();
+        $this->header = new Header();
+        $this->body = $this->body();
+        $this->url = $url;
+        $this->session = new Session;
+        $this->cookie = new Cookie;
+        $this->path = new PathVariable(null);
+        $this->file = new RequestFile($_FILES);
+        $this->request_method = new RequestMethod();
+        $this->is_request_completed = false;
     }
 
     /**
@@ -48,8 +55,8 @@ class Request
      */
     public function body():RequestBody
     {
-        self::$body = new RequestBody(json_decode(file_get_contents("php://input")));
-        return self::$body;
+        $this->body = new RequestBody(json_decode(file_get_contents("php://input")));
+        return $this->body;
     }
 
 
@@ -63,11 +70,16 @@ class Request
      */
     public function query_params():QueryParams
     {
-        if (self::$query_params == null) {
-            return self::$query_params = new QueryParams($_REQUEST);
+        if ($this->query_params == null) {
+            return $this->query_params = new QueryParams();
         } else {
-            return self::$query_params;
+            return $this->query_params;
         }
+    }
+
+
+    public function get_request_method() : RequestMethod{
+        return $this->request_method;
     }
 
 
@@ -81,10 +93,10 @@ class Request
      */
     public function update(Request $request)
     {
-        self::$query_params = $request->query_params();
-        self::$header = $request->header();
-        self::$body = $request->body();
-        self::$url = $request->get_url();
+        $this->query_params = $request->query_params();
+        $this->header = $request->header();
+        $this->body = $request->body();
+        $this->url = $request->get_url();
     }
 
 
@@ -98,10 +110,10 @@ class Request
      */
     public function set_body(RequestBody $body) :void
     {
-        if (self::$body == null) {
+        if ($this->body == null) {
             throw new NullPointerException("Request body is null. Can not set the value");
         }
-        self::$body = $body;
+        $this->body = $body;
     }
 
 
@@ -114,7 +126,7 @@ class Request
      */
     public function get_url():string
     {
-        return self::$url;
+        return $this->url;
     }
  
 
@@ -140,11 +152,11 @@ class Request
      */
     public function header():Header
     {
-        if(self::$header == null){
+        if($this->header == null){
             return new Header();
         }
         else{
-            return self::$header;
+            return $this->header;
         }
     }
 
@@ -158,7 +170,7 @@ class Request
      */
     public function set_header(Header $header) :void 
     {
-        self::$header = $header;
+        $this->header = $header;
     }
 
     /**
@@ -172,7 +184,7 @@ class Request
      */
     public function session():Session
     {
-        return self::$session;
+        return $this->session;
     }
 
     /**
@@ -184,7 +196,7 @@ class Request
      */
     public function set_session(Session $session):void
     {
-        self::$session = $session;
+        $this->session = $session;
     }
 
 
@@ -197,7 +209,7 @@ class Request
      */
     public function cookie():Cookie
     {
-        return self::$cookie;
+        return $this->cookie;
     }
 
     /**
@@ -209,40 +221,31 @@ class Request
      */
     public function set_cookie(Cookie $cookie):void
     {
-        self::$cookie = $cookie;
+        $this->cookie = $cookie;
     }
 
-
-    /**
-     * Used internally by the core
-     * 
-     * @author Shyam Dubey
-     * @version v1.0.0 
-     * @since v1.0.0 
-     */
     public function set_path($data)
     {
-        self::$path = new PathVariable($data);
+        $this->path = new PathVariable($data);
     }
 
-    /**
-     * Returns the PathVariables of the request
-     * 
-     * @return PathVariable
-     * 
-     * @author Shyam Dubey
-     * @since v1.0.0 
-     * @version v1.0.0
-     * 
-     */
+    
     public function path():PathVariable
     {
-        return self::$path;
+        return $this->path;
     }
 
 
     public function file():RequestFile
     {
-        return self::$file;
+        return $this->file;
+    }
+
+    public function set_is_request_completed(bool $val){
+        $this->is_request_completed = $val;
+    }
+
+     public function get_is_request_completed(){
+        return $this->is_request_completed;
     }
 }

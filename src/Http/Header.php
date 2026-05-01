@@ -10,7 +10,7 @@ namespace TrishulApi\Core\Http;
  */
 class Header
 {
-    private static $headers;
+    private $headers;
     const FOR_REQUEST = "Request";
     const FOR_RESPONSE = "Response";
 
@@ -25,9 +25,9 @@ class Header
     public function __construct($for = Header::FOR_REQUEST)
     {
         if ($for == Header::FOR_RESPONSE) {
-            self::$headers = apache_response_headers();
+            $this->headers = apache_response_headers();
         } else {
-            self::$headers = apache_request_headers();
+            $this->headers = apache_request_headers();
         }
     }
 
@@ -41,7 +41,7 @@ class Header
      */
     public function get_headers():array|null
     {
-        return self::$headers;
+        return $this->headers;
     }
 
 
@@ -56,7 +56,7 @@ class Header
      */
     public function get($key):object|null|string{
         if($this->has($key)){
-            return self::$headers[$key];
+            return $this->headers[$key];
         }
         else{
             return null;
@@ -73,7 +73,7 @@ class Header
      * @since v1.0.0 
      */
     public function has($key):bool{
-        if(array_key_exists($key, self::$headers)){
+        if(array_key_exists($key, $this->headers)){
             return true;
         }
         else{
@@ -92,7 +92,7 @@ class Header
      * @since v1.0.0 
      */
     public function set($key, $value):bool{
-        self::$headers[$key]= $value;
+        $this->headers[$key]= $value;
         header($key .":".$value);
         return true;
     }

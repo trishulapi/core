@@ -15,11 +15,11 @@ use TrishulApi\Core\Exception\NullPointerException;
 abstract class AbstractBody
 {
 
-    protected static $data;
+    protected $data;
 
     public function __construct($data)
     {
-        self::$data = $data;
+        $this->data = $data;
     }
 
     /**
@@ -34,7 +34,7 @@ abstract class AbstractBody
     {
         $this->assert_data_not_null();
 
-        return gettype(self::$data);
+        return gettype($this->data);
     }
 
     /**
@@ -47,7 +47,7 @@ abstract class AbstractBody
      */
     public function data():array|object|string|int|null
     {
-        return self::$data;
+        return $this->data;
     }
 
 
@@ -66,9 +66,9 @@ abstract class AbstractBody
         if ($this->is_object()) {
             return  in_array($key, $this->get_keys());
         } else if ($this->is_assoc_array()) {
-            return in_array($key, array_keys(self::$data));
+            return in_array($key, array_keys($this->data));
         } else if ($this->is_array()) {
-            return in_array($key, self::$data);
+            return in_array($key, $this->data);
         }
         return false;
     }
@@ -86,7 +86,7 @@ abstract class AbstractBody
         $this->assert_data_not_null();
 
         if ($this->get_type() == 'array') {
-            return array_keys(self::$data) !== range(0, count(self::$data) - 1);
+            return array_keys($this->data) !== range(0, count($this->data) - 1);
         }
         return false;
     }
@@ -122,7 +122,7 @@ abstract class AbstractBody
     {
         $this->assert_data_not_null();
 
-        if (is_object(self::$data)) {
+        if (is_object($this->data)) {
             return true;
         }
         return false;
@@ -141,9 +141,9 @@ abstract class AbstractBody
         $this->assert_data_not_null();
 
         if ($this->is_object()) {
-            return array_keys(get_object_vars(self::$data));
+            return array_keys(get_object_vars($this->data));
         } else if ($this->is_assoc_array()) {
-            return array_keys(self::$data);
+            return array_keys($this->data);
         } else {
             return null;
         }
@@ -176,14 +176,14 @@ abstract class AbstractBody
     {
         $this->assert_data_not_null();
         if ($this->is_assoc_array()) {
-            return array_values(self::$data);
+            return array_values($this->data);
         } else if ($this->is_array()) {
-            return self::$data;
+            return $this->data;
         } else if ($this->is_object()) {
             $object_vars = $this->get_keys();
             $output = [];
             foreach ($object_vars as $key) {
-                $output[] = self::$data->$key;
+                $output[] = $this->data->$key;
             }
             return $output;
         }
@@ -200,7 +200,7 @@ abstract class AbstractBody
      */
     private function assert_data_not_null():void
     {
-        if (self::$data == null) {
+        if ($this->data == null) {
             throw new NullPointerException("Body is null.");
         }
     }

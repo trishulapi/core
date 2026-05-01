@@ -74,16 +74,16 @@ class TrishulSwagger
                 if(is_null($route)){
                     continue;
                 }
-                if ($route['exclude_from_swagger']) {
+                if ($route->get_exclude_from_swagger()) {
                     continue;
                 }
-                if (!$route['customSwagger']) {
+                if (!$route->get_custom_swagger()) {
                     //configuration for swagger
-                    $summary = $route['summary'];
+                    $summary = $route->get_summary();
                     if ($summary == "") {
                         $summary = "";
                     }
-                    $description = $route['description'];
+                    $description = $route->get_description();
                     if ($description == "") {
                         $description = "";
                     }
@@ -91,13 +91,13 @@ class TrishulSwagger
 
                     //check the response type and build
                     $response_schema = [];
-                    if ($route['response_type'] != "") {
-                        if (gettype($route['response_type']) == 'array') {
-                            $response_class = $route['response_type'][0];
+                    if ($route->get_response_type() != "") {
+                        if (gettype($route->get_response_type()) == 'array') {
+                            $response_class = $route->get_response_type()[0];
                             if (class_exists($response_class)) {
                                 self::set_component($response_class);
                                 $schemaName = str_replace('\\', '.', $response_class);
-                                if ($route['is_response_array']) {
+                                if ($route->get_is_response_array()) {
                                     $response_schema['type'] = 'array';
                                     $response_schema["items"] = ['$ref' => '#/components/schemas/' . $schemaName];
                                 } else {
@@ -108,10 +108,10 @@ class TrishulSwagger
                                 $response_schema["items"] = ['type' => 'array'];
                             }
                         } else {
-                            if (class_exists($route['response_type'])) {
-                                self::set_component($route['response_type']);
-                                $schemaName = str_replace('\\', '.', $route['response_type']);
-                                if ($route['is_response_array']) {
+                            if (class_exists($route->get_response_type())) {
+                                self::set_component($route->get_response_type());
+                                $schemaName = str_replace('\\', '.', $route->get_response_type());
+                                if ($route->get_is_response_array()) {
                                     $response_schema['type'] = 'array';
                                     $response_schema["items"] = ['$ref' => '#/components/schemas/' . $schemaName];
                                 } else {
@@ -129,7 +129,7 @@ class TrishulSwagger
 
                     //end of check response type
                     $responses = [];
-                    $response_codes = $route['response_codes'];
+                    $response_codes = $route->get_response_codes();
                     if (gettype($response_codes) == 'array') {
                         if (count($response_codes) > 0) {
                             foreach ($response_codes as $code) {
@@ -148,10 +148,10 @@ class TrishulSwagger
                                 } else {
                                     $response_desc = "OK";
                                 }
-                                $responses[$code] = ["description" => $response_desc, "content" => [$route['consumes'] => ["schema" => $response_schema]]];
+                                $responses[$code] = ["description" => $response_desc, "content" => [$route->get_consumes() => ["schema" => $response_schema]]];
                             }
                         } else {
-                            $responses["200"] = ["description" => "Success", "content" => [$route['consumes'] => ["schema" => $response_schema]]];
+                            $responses["200"] = ["description" => "Success", "content" => [$route->get_consumes() => ["schema" => $response_schema]]];
                         }
                     } else {
                         if ($response_codes == 401) {
@@ -163,7 +163,7 @@ class TrishulSwagger
                         } else {
                             $response_desc = "OK";
                         }
-                        $responses[$response_codes] = ["description" => $response_desc, "content" => [$route['consumes'] => ["schema" => $response_schema]]];
+                        $responses[$response_codes] = ["description" => $response_desc, "content" => [$route->get_consumes() => ["schema" => $response_schema]]];
                     }
 
 
@@ -175,10 +175,10 @@ class TrishulSwagger
                     $swagger_object["responses"] = $responses;
 
                     //for request body
-                    if ($route['requestBody'] != "" && $route['requestBody'] != null) {
+                    if ($route->get_request_body() != "" && $route->get_request_body() != null) {
                         $requestBody = [];
-                        if (gettype($route['requestBody']) == 'array') {
-                            $request_class = $route['requestBody'][0];
+                        if (gettype($route->get_request_body()) == 'array') {
+                            $request_class = $route->get_request_body()[0];
                             if (class_exists($request_class)) {
                                 self::set_component($request_class);
                                 $schemaName = str_replace('\\', '.', $request_class);
@@ -187,9 +187,9 @@ class TrishulSwagger
                                 $requestBody = ['type' => 'object'];
                             }
                         } else {
-                            if (class_exists($route['requestBody'])) {
-                                self::set_component($route['requestBody']);
-                                $schemaName = str_replace('\\', '.', $route['requestBody']);
+                            if (class_exists($route->get_request_body())) {
+                                self::set_component($route->get_request_body());
+                                $schemaName = str_replace('\\', '.', $route->get_request_body());
                                 $requestBody = ['$ref' => '#/components/schemas/' . $schemaName];
                             } else {
                                 $requestBody = ['type' => 'object'];
@@ -198,7 +198,7 @@ class TrishulSwagger
                         $swagger_object["requestBody"] = [
                             "required" => true,
                             "content" => [
-                                $route['consumes'] => [
+                                $route->get_consumes() => [
                                     "schema" => $requestBody
                                 ]
                             ]
@@ -206,22 +206,22 @@ class TrishulSwagger
                     }
                     //end of request body
                     //for tag
-                    if ($route['tag'] != "") {
-                        $swagger_object["tags"] = [$route['tag']];
+                    if ($route->get_tag() != "") {
+                        $swagger_object["tags"] = [$route->get_tag()];
                     }
 
                     //set security
-                    if (gettype($route['security']) == 'array' && count($route['security']) > 0) {
-                        foreach ($route['security'] as $securityType) {
+                    if (gettype($route->get_security()) == 'array' && count($route->get_security()) > 0) {
+                        foreach ($route->get_security() as $securityType) {
                             $swagger_object["security"][][$securityType] = [];
                         }
                     }
                     //end of set security
 
                     //for parameters check {} in url 
-                    $url = trim($route['url'], '/');
+                    $url = trim($route->get_url(), '/');
 
-                    $patternRegex = preg_replace('/\{(\w+)\}/', '(?P<\1>[^/]+)', trim($route['url'], '/'));
+                    $patternRegex = preg_replace('/\{(\w+)\}/', '(?P<\1>[^/]+)', trim($route->get_url(), '/'));
                     $patternRegex = "@^" . $patternRegex . "$@";
 
                     if (preg_match($patternRegex, $url, $matches)) {
@@ -234,30 +234,30 @@ class TrishulSwagger
                         }
                     }
 
-                    if (!$swagger->has_path($route['url'])) {
+                    if (!$swagger->has_path($route->get_url())) {
 
                         $path =  [
-                            strtolower($route['method']) => $swagger_object
+                            strtolower($route->get_method()) => $swagger_object
                         ];
-                        $swagger->addPath($route['url'], $path);
+                        $swagger->addPath($route->get_url(), $path);
                     } else {
-                        $obj = [strtolower($route['method']) => $swagger_object];
-                        $swagger->set_to_existing_path($route['url'], $obj);
+                        $obj = [strtolower($route->get_method()) => $swagger_object];
+                        $swagger->set_to_existing_path($route->get_url(), $obj);
                     }
 
                     //end for parameters
                 } else {
-                    $swagger_object = $route['swagger_object'];
+                    $swagger_object = $route->get_swagger_object();
                     if ($swagger_object != "") {
-                        if (!$swagger->has_path($route['url'])) {
+                        if (!$swagger->has_path($route->get_url())) {
 
                             $path =  [
-                                strtolower($route['method']) => $swagger_object
+                                strtolower($route->get_method()) => $swagger_object
                             ];
-                            $swagger->addPath($route['url'], $path);
+                            $swagger->addPath($route->get_url(), $path);
                         } else {
-                            $obj = [strtolower($route['method']) => $swagger_object];
-                            $swagger->set_to_existing_path($route['url'], $obj);
+                            $obj = [strtolower($route->get_method()) => $swagger_object];
+                            $swagger->set_to_existing_path($route->get_url(), $obj);
                         }
                     }
                 }

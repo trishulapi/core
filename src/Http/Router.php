@@ -13,6 +13,7 @@ use TrishulApi\Core\Exception\ResourceNotFoundException;
 use TrishulApi\Core\Helpers\Environment;
 use TrishulApi\Core\Log\LoggerFactory;
 use TrishulApi\Core\Middleware\MiddlewareInterface;
+use TrishulApi\Core\Routes\Route;
 
 /**
  * This class contains functions for handling requests in application.
@@ -61,28 +62,26 @@ class Router
         $produces = "application/json",
         $requestBody = null,
         $exclude_from_swagger = false
-    ): array {
-        $url = $url;
-        $callback = $callback;
-
-        $route["url"] = $url;
-        $route["callback"] = $callback;
-        $route["method"] = 'GET';
-        $route["middlewares"] = $middlewares;
-        $route["summary"] = $summary;
-        $route["description"] = $description;
-        $route["response_codes"] = $response_codes;
-        $route["response_type"] = $response_type;
-        $route["is_response_array"] = $is_response_array;
-        $route["consumes"] = $consumes;
-        $route["produces"] = $produces;
-        $route["tag"] = $tag;
-        $route["security"] = $security;
-        $route["customSwagger"] = $customSwagger;
-        $route["swagger_object"] = $swagger_object;
-        $route["exclude_from_swagger"] = $exclude_from_swagger;
-        $route['requestBody'] = $requestBody;
-
+    ): Route {
+        $route = new Route(
+            RequestType::GET,
+            $url,
+            $callback,
+            $middlewares,
+            $summary,
+            $description,
+            $response_codes,
+            $response_type,
+            $is_response_array,
+            $tag,
+            $customSwagger,
+            $swagger_object,
+            $security,
+            $consumes = "application/json",
+            $produces = "application/json",
+            $requestBody = null,
+            $exclude_from_swagger = false
+        );
 
         array_push(self::$routes, $route);
         return $route;
@@ -118,30 +117,26 @@ class Router
         $requestBody = null,
         $exclude_from_swagger = false
 
-    ): array {
-        $url = $url;
-        $callback = $callback;
-
-        $route["url"] = $url;
-        $route["callback"] = $callback;
-        $route["method"] = 'POST';
-        $route["middlewares"] = $middlewares;
-        $route["summary"] = $summary;
-        $route["description"] = $description;
-        $route["summary"] = $summary;
-        $route["response_codes"] = $response_codes;
-        $route["response_type"] = $response_type;
-        $route["is_response_array"] = $is_response_array;
-        $route["consumes"] = $consumes;
-        $route["produces"] = $produces;
-        $route["tag"] = $tag;
-        $route["security"] = $security;
-        $route["customSwagger"] = $customSwagger;
-        $route["swagger_object"] = $swagger_object;
-        $route["exclude_from_swagger"] = $exclude_from_swagger;
-        $route['requestBody'] = $requestBody;
-
-
+    ): Route {
+        $route = new Route(
+            RequestType::POST,
+            $url,
+            $callback,
+            $middlewares,
+            $summary,
+            $description,
+            $response_codes,
+            $response_type,
+            $is_response_array,
+            $tag,
+            $customSwagger,
+            $swagger_object,
+            $security,
+            $consumes = "application/json",
+            $produces = "application/json",
+            $requestBody = null,
+            $exclude_from_swagger = false
+        );
         array_push(self::$routes, $route);
         return $route;
     }
@@ -189,29 +184,26 @@ class Router
         $requestBody = null,
         $exclude_from_swagger = false
 
-    ): array {
-        $url = $url;
-        $callback = $callback;
-
-        $route["url"] = $url;
-        $route["callback"] = $callback;
-        $route["method"] = 'DELETE';
-        $route["middlewares"] = $middlewares;
-        $route["summary"] = $summary;
-        $route["description"] = $description;
-        $route["response_codes"] = $response_codes;
-        $route["response_type"] = $response_type;
-        $route["is_response_array"] = $is_response_array;
-        $route["consumes"] = $consumes;
-        $route["produces"] = $produces;
-        $route["tag"] = $tag;
-        $route["security"] = $security;
-        $route["customSwagger"] = $customSwagger;
-        $route["swagger_object"] = $swagger_object;
-        $route["exclude_from_swagger"] = $exclude_from_swagger;
-        $route['requestBody'] = $requestBody;
-
-
+    ): Route {
+        $route = new Route(
+            RequestType::DELETE,
+            $url,
+            $callback,
+            $middlewares,
+            $summary,
+            $description,
+            $response_codes,
+            $response_type,
+            $is_response_array,
+            $tag,
+            $customSwagger,
+            $swagger_object,
+            $security,
+            $consumes = "application/json",
+            $produces = "application/json",
+            $requestBody = null,
+            $exclude_from_swagger = false
+        );
         array_push(self::$routes, $route);
         return $route;
     }
@@ -249,44 +241,30 @@ class Router
         $requestBody = null,
         $exclude_from_swagger = false
 
-    ): array {
-        $url = $url;
-        $callback = $callback;
-
-        $route["url"] = $url;
-        $route["callback"] = $callback;
-        $route["method"] = 'PUT';
-        $route["middlewares"] = $middlewares;
-        $route["summary"] = $summary;
-        $route["description"] = $description;
-        $route["response_codes"] = $response_codes;
-        $route["response_type"] = $response_type;
-        $route["is_response_array"] = $is_response_array;
-        $route["consumes"] = $consumes;
-        $route["produces"] = $produces;
-        $route["tag"] = $tag;
-        $route["security"] = $security;
-        $route["customSwagger"] = $customSwagger;
-        $route["swagger_object"] = $swagger_object;
-        $route["exclude_from_swagger"] = $exclude_from_swagger;
-        $route['requestBody'] = $requestBody;
-
-
+    ): Route {
+        $route = new Route(
+            RequestType::PUT,
+            $url,
+            $callback,
+            $middlewares,
+            $summary,
+            $description,
+            $response_codes,
+            $response_type,
+            $is_response_array,
+            $tag,
+            $customSwagger,
+            $swagger_object,
+            $security,
+            $consumes = "application/json",
+            $produces = "application/json",
+            $requestBody = null,
+            $exclude_from_swagger = false
+        );
         array_push(self::$routes, $route);
         return $route;
     }
 
-    /**
-     * This method is used to handle the merge request in your application.
-     * it takes two required parameters (url and callback, middlewares = []) 
-     * url at which you want to perform any callback 
-     * Syntax for callback function is Service@function_name 
-     * @example Router::merge("/user", "UserService@any_function);
-     * middlewares are optional you can put middlewares in the method the request will pass through the middleware
-     * @author Shyam Dubey
-     * @since v1.0.0
-     * @version v1.0.0
-     */
     public static function merge(
         $url,
         $callback,
@@ -305,27 +283,26 @@ class Router
         $requestBody = null,
         $exclude_from_swagger = false
 
-    ): array {
-        $url = $url;
-        $callback = $callback;
-
-        $route["url"] = $url;
-        $route["callback"] = $callback;
-        $route["method"] = 'MERGE';
-        $route["middlewares"] = $middlewares;
-        $route["summary"] = $summary;
-        $route["description"] = $description;
-        $route["response_codes"] = $response_codes;
-        $route["response_type"] = $response_type;
-        $route["is_response_array"] = $is_response_array;
-        $route["consumes"] = $consumes;
-        $route["produces"] = $produces;
-        $route["tag"] = $tag;
-        $route["security"] = $security;
-        $route["customSwagger"] = $customSwagger;
-        $route["swagger_object"] = $swagger_object;
-        $route["exclude_from_swagger"] = $exclude_from_swagger;
-        $route['requestBody'] = $requestBody;
+    ): Route {
+        $route = new Route(
+            RequestType::MERGE,
+            $url,
+            $callback,
+            $middlewares,
+            $summary,
+            $description,
+            $response_codes,
+            $response_type,
+            $is_response_array,
+            $tag,
+            $customSwagger,
+            $swagger_object,
+            $security,
+            $consumes = "application/json",
+            $produces = "application/json",
+            $requestBody = null,
+            $exclude_from_swagger = false
+        );
         array_push(self::$routes, $route);
         return $route;
     }
@@ -354,7 +331,7 @@ class Router
      * @since v1.0.0 
      * @version v1.0.0 
      */
-    public static function parent($url, array $childrens, $middlewares = [], $except = []): void
+    public static function parent(string $url, array $childrens, array $middlewares = [], array $except = []): void
     {
         if ($childrens != null) {
             if (gettype($childrens) != 'array') {
@@ -362,21 +339,20 @@ class Router
             }
 
             foreach ($childrens as $ch) {
-                $raw_url = $ch['url'];
-                $ch['url'] = $url . $ch['url'];
-                if ($ch['tag'] == "") {
-                    $ch['tag'] = ucfirst(trim($url, "/"));
+                $ch->set_url($url . $ch->get_url());
+                if ($ch->get_tag() == "") {
+                    $ch->set_tag(ucfirst(trim($url, "/")));
                 }
                 if (count($middlewares) > 0) {
                     if (gettype($except) == 'array' && count($except) > 0) {
                         foreach ($except as $excepted_url => $excepted_method) {
-                            if ($ch['url'] != $excepted_url && $ch['method'] != $excepted_method) {
-                                $ch['middlewares'] = $middlewares;
+                            if ($ch->get_url() != $excepted_url && $ch->get_method() != $excepted_method) {
+                                $ch->set_middlewares($middlewares);
                                 break;
                             }
                         }
                     } else {
-                        $ch['middlewares'] = $middlewares;
+                        $ch->set_middlewares($middlewares);
                     }
                 }
                 array_push(self::$routes, $ch);
@@ -411,24 +387,25 @@ class Router
         $requestBody = null,
         $exclude_from_swagger = false
     ) {
-        $route["url"] = $url;
-        $route["callback"] = $callback;
-        $route["method"] = $method;
-        $route["middlewares"] = $middlewares;
-        $route["summary"] = $summary;
-        $route["description"] = $description;
-        $route["response_codes"] = $response_codes;
-        $route["response_type"] = $response_type;
-        $route["is_response_array"] = $is_response_array;
-        $route["consumes"] = $consumes;
-        $route["produces"] = $produces;
-        $route["tag"] = $tag;
-        $route["security"] = $security;
-        $route["customSwagger"] = $customSwagger;
-        $route["swagger_object"] = $swagger_object;
-        $route["exclude_from_swagger"] = $exclude_from_swagger;
-        $route['requestBody'] = $requestBody;
-
+        $route = new Route(
+            $method,
+            $url,
+            $callback,
+            $middlewares,
+            $summary,
+            $description,
+            $response_codes,
+            $response_type,
+            $is_response_array,
+            $tag,
+            $customSwagger,
+            $swagger_object,
+            $security,
+            $consumes = "application/json",
+            $produces = "application/json",
+            $requestBody = null,
+            $exclude_from_swagger = false
+        );
         return $route;
     }
 
@@ -443,172 +420,12 @@ class Router
      * @since v1.0.0
      * @version v1.0.0
      */
-    public static function include($routes)
+    public static function include(array $routes)
     {
         if ($routes != null) {
             foreach ($routes as $route) {
                 array_push(self::$routes, $route);
             }
-        }
-    }
-
-
-    private static function handle($url, $callback, $requestMethod, $params = [], $middlewares = []): void
-    {
-
-        if ($_SERVER['REQUEST_METHOD'] != $requestMethod) {
-            return;
-        }
-        self::$middlewaresQueue = [];
-        self::$middleware_ojbects_queue = [];
-        $request = new Request($url);
-        if (gettype($middlewares) == 'object') {
-            array_push(self::$middlewaresQueue, $middlewares);
-        } else if (count($middlewares) > 0) {
-            self::$middlewaresQueue = array_merge($middlewares);
-        }
-        if (count(self::$exempted_routes) == 0 && count(self::$global_middlewares) > 0) {
-            self::$middlewaresQueue = array_merge(self::$middlewaresQueue, self::$global_middlewares);
-        } else if (count(self::$exempted_routes) > 0) {
-            $exempted_routes_url = array_keys(self::$exempted_routes);
-            if (isset(self::$exempted_routes[$url])) {
-                if (!in_array(rtrim($url, "/"), $exempted_routes_url) && $requestMethod != self::$exempted_routes[$url]) {
-                    self::$middlewaresQueue = array_merge(self::$middlewaresQueue, self::$global_middlewares);
-                }
-            }
-        }
-        foreach (self::$middlewaresQueue as $middleware) {
-            $m = new $middleware;
-            if (!$m instanceof MiddlewareInterface) {
-                throw new NotAnInstanceException($m::class . " is not instance of " . MiddlewareInterface::class);
-            }
-            array_push(self::$middleware_ojbects_queue, $m);
-            $request = $m->handle_request($request);
-            $request->update($request);
-        }
-
-        if (gettype($callback) == 'array' || gettype($callback) == 'object') {
-            Response::out(HttpStatus::OK, $callback);
-        } else if (!stripos($callback, "@")) {
-            Response::out(HttpStatus::OK, $callback);
-        }
-        $arr = explode("@", $callback);
-        $controller = $arr[0];
-        $controller_method = $arr[1];
-
-        if (class_exists($controller)) {
-            if (!method_exists($controller, $controller_method)) {
-                throw new MethodNotFoundException($controller_method . " method not found in class " . $controller);
-            }
-            $container = new Container;
-            $instance = $container->provide($controller, $request);
-            $request->set_path($params);
-            $response = $instance->$controller_method($params);
-            if (!$response instanceof Response) {
-                $response = Response::json(HttpStatus::OK, $response);
-            }
-            foreach (self::$middleware_ojbects_queue as $m) {
-                if (!$m instanceof MiddlewareInterface) {
-                    throw new NotAnInstanceException($m::class . " is not instance of " . MiddlewareInterface::class);
-                }
-                $response = $m->handle_response($response);
-            }
-            if ($response instanceof Response) {
-                if ($response->get_return_type() == Response::RETURN_TYPE_JSON) {
-                    self::$is_request_completed = true;
-
-                    self::$logger->info("Sending Response [" . $response->get_status_code() . "]");
-                    header("content-type:application/json");
-                    http_response_code($response->get_status_code());
-                    echo json_encode($response->get_body()->data());
-                    die();
-                } else {
-                    throw new InvalidResponseTypeException("Invalid Response Type. It should be Response::json()");
-                }
-            } else {
-                throw new InvalidResponseTypeException("Invalid Response Type. It should be Response::json()");
-            }
-        } else {
-            throw new ClassNotFoundException($controller . " Class Not Found.");
-        }
-    }
-
-
-    /**
-     * This method searches for all the routes which you have added in index.php file. 
-     * 
-     * @author Shyam Dubey
-     * @since v1.0.0
-     * @version v1.0.0
-     */
-    public static function init(): void
-    {
-        self::$logger = LoggerFactory::get_logger(self::class);
-
-        $routeUri = $_SERVER['REQUEST_URI'];
-        $host_path = Environment::get("HOST_PATH") ?? "";
-        if ($host_path == "") {
-            $host_path = "/";
-        }
-        if ($host_path != "/" && strpos($routeUri, $host_path) === 0) {
-            $routeUri = substr($routeUri, strlen($host_path));
-        }
-        if (strpos($routeUri, "?") !== false) {
-            $routeUri = explode("?", $routeUri)[0];
-        }
-        $routeUri = rtrim($routeUri, "/");
-
-        self::$logger->info("Incoming Request[" . $_SERVER['REQUEST_METHOD'] . "] on Url: " . $routeUri . " ");
-
-        if (count(self::$routes) > 0) {
-            $route_found = false;
-            foreach (self::$routes as $route) {
-                $url = trim($routeUri, '/');
-                if(is_null($route)){
-                    continue;
-                }
-                //if ? in the url
-                if (strpos($url, "?")) {
-                    $explode = explode("?", $url);
-                    $url = trim($explode[0], "/");
-                }
-
-                // First check if route is static (no {} placeholders)
-                if (strpos($url, '{') === false && $url === trim($route['url'], "/") && $route['method'] === $_SERVER['REQUEST_METHOD']) {
-                    $route_found = true;
-                    self::handle($route['url'], $route['callback'], $route['method'], [], $middleware = $route['middlewares']);
-                    break;
-                }
-            }
-            if (!$route_found) {
-                foreach (self::$routes as $route) {
-                    if($route == null || $route['url'] == null){
-                        continue;
-                    }
-                    $url = trim($routeUri, '/');
-                    //if ? in the url
-                    if (strpos($url, "?")) {
-                        $explode = explode("?", $url);
-                        $url = trim($explode[0], "/");
-                    }
-                    $patternRegex = preg_replace('/\{(\w+)\}/', '(?P<\1>[^/]+)', trim($route['url'], '/'));
-                    $patternRegex = "@^" . $patternRegex . "$@";
-
-                    if (preg_match($patternRegex, $url, $matches)) {
-                        $params = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
-                        $route_found = true;
-                        self::handle($route['url'], $route['callback'], $route['method'], $params, $middleware = $route['middlewares']);
-                    }
-                }
-            }
-            if (!$route_found) {
-                throw new ResourceNotFoundException("Not Found");
-            }
-            if (!self::$is_request_completed) {
-                throw new ResourceNotFoundException("Not Found");
-            }
-        } else {
-            throw new ResourceNotFoundException("Not Found");
         }
     }
 
@@ -642,5 +459,15 @@ class Router
     {
         return self::$routes;
     }
-}
 
+    public static function get_route($path, $method)
+    {
+        $routes = self::get_routes();
+        foreach ($routes as $route) {
+            if ($route->url == $path && $route->method = $method) {
+                return $route;
+            }
+        }
+        return null;
+    }
+}
