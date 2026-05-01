@@ -25,13 +25,7 @@ class ExceptionHandler implements ExceptionHandlerInterface
 
     private static LoggerFactory $logger;
 
-    /**
-     * This function initiate the Exception Handler Globally. All the exceptions will be handled by this method.
-     * Please ensure you place this method on the top of index.php file. So that it can handle every exception in your application.
-     * @author Shyam Dubey
-     * @since v1.0.0
-     * @version 1.0.0
-     */
+
     public static function init($class)
     {
         if ($class == null) {
@@ -73,7 +67,8 @@ class ExceptionHandler implements ExceptionHandlerInterface
         error_log($message . " | " . $stacktrace);
         self::$logger->error(json_encode($response));
         self::$logger->info("Sending Response [" . $statusCode . "]");
-        Response::out(HttpStatus::from($statusCode), $response);
+        $response = new Response($response, HttpStatus::from($statusCode));
+        $response->out();
     }
 }
 

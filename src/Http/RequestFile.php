@@ -13,10 +13,10 @@ use TrishulApi\Core\File\MultipartFile;
 class RequestFile
 {
 
-    private static $data;
+    private $data;
     public function __construct($file_data)
     {
-        self::$data = $file_data;
+        $this->data = $file_data;
     }
     /**
      * Returns how many files are attached in the request.
@@ -27,8 +27,8 @@ class RequestFile
      */
     public function length($paramName)
     {
-        if (gettype(self::$data[$paramName]['name']) == 'array') {
-            return count(self::$data[$paramName]['name']);
+        if (gettype($this->data[$paramName]['name']) == 'array') {
+            return count($this->data[$paramName]['name']);
         } else {
             return 1;
         }
@@ -45,7 +45,7 @@ class RequestFile
      */
     public function get($paramName, $multi = false): MultipartFile | null | array
     {
-        $file = self::$data[$paramName];
+        $file = $this->data[$paramName];
         if ($file != null) {
             if ($this->length($paramName) == 1) {
                 return new MultipartFile($file['name'], $file['full_path'], $file['type'], $file['tmp_name'], $file['error'], $file['size']);

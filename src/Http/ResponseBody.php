@@ -29,7 +29,7 @@ class ResponseBody extends AbstractBody
  * 
  */
     public function to_request_body(){
-        return new RequestBody(self::$data);
+        return new RequestBody(parent::$data);
     }
 
 }

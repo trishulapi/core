@@ -28,7 +28,7 @@ class Container
                 return new $class;
             }
             else if($class == Request::class){
-                return new $class($request->get_url());
+                return $request;
             }
 
             $params = $constructor->getParameters();

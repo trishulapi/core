@@ -5,11 +5,11 @@ namespace TrishulApi\Core\Http;
 class Cookie
 {
 
-    private static $cookies;
+    private $cookies;
 
     public function __construct()
     {
-        self::$cookies = $_COOKIE;
+        $this->cookies = $_COOKIE;
     }
 
     /**
@@ -23,7 +23,7 @@ class Cookie
      */
     public function get_all():array|null
     {
-        return self::$cookies;
+        return $this->cookies;
     }
 
     /**
@@ -37,8 +37,8 @@ class Cookie
      */
     public function get($key):string|null|object|array
     {
-        if (isset(self::$cookies[$key])) {
-            return self::$cookies[$key];
+        if (isset($this->cookies[$key])) {
+            return $this->cookies[$key];
         } else {
             return null;
         }

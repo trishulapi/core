@@ -13,11 +13,11 @@ use TrishulApi\Core\Exception\NullPointerException;
  */
 class PathVariable{
 
-    private static $data;
+    private $data;
 
     public function __construct($data)
     {
-        self::$data = $data;
+        $this->data = $data;
     }
 
     /**
@@ -29,8 +29,7 @@ class PathVariable{
  */
     public function has($key):bool
     {
-        $this->assert_data_non_null();
-        if(isset(self::$data[$key])){
+        if(isset($this->data[$key])){
             return true;
         }
         return false;
@@ -47,7 +46,7 @@ class PathVariable{
     public function get($key):string|null
     {
         if($this->has($key)){
-            return urldecode(self::$data[$key]);
+            return urldecode($this->data[$key]);
         }
         return null;
     }
@@ -59,7 +58,7 @@ class PathVariable{
      * @since v1.0.0 
      */
     private function assert_data_non_null(){
-        if(self::$data == null)
+        if($this->data == null)
         {
             throw new NullPointerException("Pathvariables are not found.");
         }

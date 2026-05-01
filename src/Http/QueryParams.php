@@ -12,20 +12,10 @@ use TrishulApi\Core\Exception\NullPointerException;
  */
 class QueryParams
 {
-    private static $data;
-    public function __construct($data)
+    private $data;
+    public function __construct()
     {
-        if ($data == null) {
-            if (RequestType::is_get() || RequestType::is_put() || RequestType::is_merge() || RequestType::is_delete()) {
-                self::$data = $_GET;
-            } else if (RequestType::is_post()) {
-                self::$data = $_POST;
-            }
-        }
-        else 
-        {
-            self::$data = $data;
-        }
+        $this->data = $_GET;    
     }
 
 
@@ -38,8 +28,7 @@ class QueryParams
      */
     public function has($key): bool
     {
-        $this->assert_data_not_null();
-        if (isset(self::$data[$key])) {
+        if (isset($this->data[$key])) {
             return true;
         }
         return false;
@@ -54,24 +43,11 @@ class QueryParams
      */
     public function get($key): string|null
     {
-        $this->assert_data_not_null();
         if ($this->has($key)) {
-            return self::$data[$key];
+            return $this->data[$key];
         }
         return null;
     }
 
-    /**
-     * Used internally to assert that QueryParams is not null
-     * 
-     * @author Shyam Dubey
-     * @version v1.0.0 
-     * @since v1.0.0
-     */
-    private function assert_data_not_null()
-    {
-        if (self::$data == null) {
-            throw new NullPointerException("No Query Params Found in the request.");;
-        }
-    }
+
 }
