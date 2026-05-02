@@ -19,26 +19,28 @@ class App
     private  $global_exception_handler_class;
     private static $env_path;
 
-    public function initialize(){
-
+    public function __construct() {
+        Router::get("/docs", TrishulSwaggerBuilder::class . "@generate_doc", exclude_from_swagger: true);
     }
+
+    public function initialize() {}
 
     public function start()
     {
-        if($this->global_exception_handler_class == null){
+        if (!Environment::get('ENABLE_SWAGGER')) {
+           Router::_remove_route(Router::get_route("/docs", "GET"));
+        }
+
+        if ($this->global_exception_handler_class == null) {
             $this->global_exception_handler_class = ExceptionHandler::class;
         }
         ExceptionHandler::init($this->global_exception_handler_class);
         CorsSecurity::init();
-        if(Environment::get('ENABLE_SWAGGER')){
-            Router::get("/docs", TrishulSwaggerBuilder::class . "@generate_doc", exclude_from_swagger:true);
-        }
         $requestInitiazer = new RequestInitializer();
         $requestInitiazer->init();
-
     }
 
-    
+
     public function set_global_exception_handler($exception_class)
     {
         $this->global_exception_handler_class = $exception_class;
@@ -52,12 +54,14 @@ class App
     }
 
 
-    public function get_allowed_domains(){
+    public function get_allowed_domains()
+    {
         return CorsSecurity::get_allowed_domains();
     }
 
-    public function set_log_dir($dir){
-        if(strlen($dir) == 0){
+    public function set_log_dir($dir)
+    {
+        if (strlen($dir) == 0) {
             throw new InvalidArgumentException("Please provide valid log directory");
         }
 
@@ -65,7 +69,8 @@ class App
     }
 
 
-    public function get_swagger(){
+    public function get_swagger()
+    {
         return TrishulSwagger::get_instance();
     }
 
@@ -80,4 +85,3 @@ class App
         return self::$env_path;
     }
 }
-

@@ -28,6 +28,10 @@ class Middleware{
         $this->except_routes[] = $route;
     }
 
+    public function add_new_except_routes(array $routes){
+        $this->except_routes[] = array_merge($this->except_routes, $routes);
+    }
+
     public function get_except_routes(){
         return $this->except_routes;
     }
