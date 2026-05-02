@@ -98,7 +98,17 @@ class Route
     }
 
     public function set_middlewares($middlewares){
-        $this->middlewares = $middlewares;
+        if(gettype($middlewares) == 'object' && !$middlewares instanceof Middleware){
+            array_push($this->middlewares, new Middleware($middlewares, false, []));
+        }
+        else if (gettype($middlewares) == 'array' && !$middlewares instanceof Middleware){
+            foreach($middlewares as $m){
+                array_push($this->middlewares, new Middleware($m, false, []));
+            }
+        }
+        else if($middlewares instanceof Middleware){
+            array_push($this->middlewares, $middlewares);
+        }
     }
 
     public function get_summary()

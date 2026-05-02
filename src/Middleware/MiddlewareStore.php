@@ -5,7 +5,13 @@ namespace TrishulApi\Core\Middleware;
 class MiddlewareStore{
 
   private array $middlewares = [];
-  public function __construct(){
+  public function __construct(array $middlewares, array $exempted_routes){
+    if(count($middlewares) > 0){
+      foreach($middlewares as $m){
+        $m->add_new_except_routes($exempted_routes);
+        array_push($this->middlewares, $m);
+      }
+    }
   }
 
   public function add(Middleware $middleware){

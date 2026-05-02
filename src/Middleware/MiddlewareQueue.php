@@ -13,7 +13,7 @@ class MiddlewareQueue
         return $this->queue;
     }
 
-    public function add_single(string $middleware)
+    public function add_single(Middleware $middleware)
     {
         $this->queue[] = $middleware;
     }
