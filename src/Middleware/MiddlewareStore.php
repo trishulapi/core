@@ -2,15 +2,17 @@
 
 namespace TrishulApi\Core\Middleware;
 
+use TrishulApi\Core\Http\Router;
+
 class MiddlewareStore{
 
   private array $middlewares = [];
-  public function __construct(array $middlewares, array $exempted_routes){
-    if(count($middlewares) > 0){
-      foreach($middlewares as $m){
-        $m->add_new_except_routes($exempted_routes);
-        array_push($this->middlewares, $m);
-      }
+  public function __construct(){
+    $global_middlewares = Router::get_global_middlewares();
+    foreach($global_middlewares as $m){
+      $middleware = new Middleware($m);
+      $middleware->set_is_global(true);
+      $this->add($middleware);
     }
   }
 
