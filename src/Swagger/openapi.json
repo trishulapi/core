@@ -1,84 +1,12 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Notes API Version 1.0",
+        "title": "My App",
         "version": "1.0.0",
         "description": "Welcome to My APIs."
     },
     "paths": {
-        "/home/": {
-            "get": {
-                "summary": "",
-                "description": "",
-                "responses": {
-                    "200": {
-                        "description": "Success",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "items": {
-                                        "type": "array"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "Home"
-                ]
-            }
-        },
-        "/home/provide": {
-            "get": {
-                "summary": "",
-                "description": "",
-                "responses": {
-                    "200": {
-                        "description": "Success",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "items": {
-                                        "type": "array"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "Home"
-                ]
-            }
-        },
-        "/users/": {
-            "get": {
-                "summary": "",
-                "description": "",
-                "responses": {
-                    "200": {
-                        "description": "Success",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "items": {
-                                        "type": "array"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "Users"
-                ]
-            }
-        },
-        "/docs": {
+        "/": {
             "get": {
                 "summary": "",
                 "description": "",
@@ -99,7 +27,7 @@
                 }
             }
         },
-        "/": {
+        "/docs": {
             "get": {
                 "summary": "",
                 "description": "",
@@ -128,7 +56,7 @@
     "servers": [
         {
             "url": "http://localhost:8000",
-            "description": "Notes API Version 1.0"
+            "description": "My App"
         }
     ]
 }

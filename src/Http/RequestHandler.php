@@ -18,6 +18,7 @@ use TrishulApi\Core\Routes\Route;
 
 class RequestHandler
 {
+
     private $logger;
     private MiddlewareStore $middlewareStore;
     private MiddlewareQueue $middlewaresQueue;
@@ -26,9 +27,9 @@ class RequestHandler
     public function __construct()
     {
         $this->logger = LoggerFactory::get_logger(self::class);
-        $this->middlewareStore = new MiddlewareStore(Router::get_global_middlewares(), Router::get_exempted_routes());
+        $this->middlewareStore = new MiddlewareStore();
         $this->middlewaresQueue = new MiddlewareQueue([]);
-        // $this->exempted_route_store = new ExemptedRouteStore();
+        $this->exempted_route_store = new ExemptedRouteStore([]);
     }
 
     public function handle(Route $route, Request $request, $params): void
@@ -45,13 +46,12 @@ class RequestHandler
                     $this->middlewaresQueue->add_single($middleware);
                 }
             }
-        } 
-        // else if (count($this->exempted_route_store->all()) > 0) {
-        //     if (!in_array($route, $this->exempted_route_store->all())) {
-        //         $this->logger->info("Implementing Middlewares on route " . $route->get_url() . "");
-        //         $this->middlewaresQueue->add_multiple($route->get_middlewares());
-        //     }
-        // }
+        } else if (count($this->exempted_route_store->all()) > 0) {
+            if (!in_array($route, $this->exempted_route_store->all())) {
+                $this->logger->info("Implementing Middlewares on route " . $route->get_url() . "");
+                $this->middlewaresQueue->add_multiple($route->get_middlewares());
+            }
+        }
         foreach ($this->middlewaresQueue->get_queue() as $middleware) {
             $m_class_name = $middleware->get_middleware_class_name();
             $m = new $m_class_name;
@@ -79,9 +79,6 @@ class RequestHandler
             $instance = $container->provide($controller, $request);
             $request->set_path($params);
             $response = $instance->$controller_method($params);
-            if(!$response instanceof Response){
-                $response = new Response($response, HttpStatus::OK);
-            }
             new ResponseHandler($response, $request, $this->middlewaresObjectsQueue);
         } else {
             throw new ClassNotFoundException($controller . " Class Not Found.");

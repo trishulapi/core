@@ -20,6 +20,13 @@ private RequestHandler $request_handler;
     }
 
     
+    /**
+     * This method searches for all the routes which you have added in index.php file. 
+     * 
+     * @author Shyam Dubey
+     * @since v1.0.0
+     * @version v1.0.0
+     */
     public function init(): void
     {
         $request = new Request($_SERVER['REQUEST_URI']);
@@ -35,7 +42,9 @@ private RequestHandler $request_handler;
             $routeUri = explode("?", $routeUri)[0];
         }
         $routeUri = rtrim($routeUri, "/");
+
         $this->logger->info("[" . $_SERVER['REQUEST_METHOD'] . "] Request  on Url: " . $routeUri . " ");
+
         if (count($this->routes) > 0) {
             $route_found = false;
             foreach ($this->routes as $route) {
